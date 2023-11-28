@@ -1,5 +1,7 @@
 # Import the dependencies.
 import numpy as np
+import pandas as pd
+import datetime as dt
 
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
@@ -33,7 +35,6 @@ session = Session(engine)
 app = Flask(__name__)
 
 
-
 #################################################
 # Flask Routes
 #################################################
@@ -49,13 +50,12 @@ def welcome():
 
 @app.route("/api/v1.0/precipitation")
 def precipitation():
-    # Date 12 months ago
-    precip_data = session.query(measurement.date, func.avg(measurement.prcp)).group_by(measurement.date).all()
+    precip_data = session.query(measurement.date,func.avg(measurement.prcp)).group_by(measurement.date).all()
     return jsonify(precip_data)
 
 @app.route("/api/v1.0/stations")
 def stations():
-    station_data = session.query(Station.station, Station.name).all()
+    station_data = session.query(station.station, station.name).all()
     return jsonify(station_data )
     
     @app.route("/api/v1.0/tobs")
@@ -63,5 +63,5 @@ def tobs():
     tobs_data = session.query(measurement.date, measurement.station, measurement.tobs).all()
     return jsonify(tobs_data)
     
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
